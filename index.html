@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIGI Legacy Vault</title>
+<!-- IT132 (Oct 20, 2026) - DLV's own page for the vault: Google does not show its blue
+     "This application was created by a Google Apps Script user" box when the vault opens inside it. -->
+<style>
+html,body{margin:0;padding:0;height:100%;background:#f5f0e8;}
+#app{position:fixed;top:0;left:0;width:100%;height:100%;border:0;display:block;}
+</style>
+</head>
+<body>
+<iframe id="app" title="DIGI Legacy Vault" allow="microphone; camera; clipboard-write; fullscreen; autoplay"></iframe>
+<script>
+(function () {
+  var B = 'https://script.google.com/macros/s/AKfycbxGG5z60Ce0ubFFwasaKqfTbPb8uyb4JDuaYSbeePrZt1q8vBdKSjclL6OQMNEaSytr9A/exec';
+  var f = document.getElementById('app');
+  var q = new URLSearchParams(location.search);
+  if (!q.toString()) q.set('action', 'demoPreview'); // Try Me First by default
+  q.set('embed', '1');
+  f.src = B + '?' + q.toString();
+  window.addEventListener('message', function (e) {
+    var o = e.origin || '';
+    if (!(/^https:\/\/[a-z0-9-]+\.googleusercontent\.com$/.test(o) || o === 'https://script.google.com' || o === location.origin)) return;
+    var d = e.data || {};
+    if (d.dlv === 'nav' && typeof d.url === 'string') {
+      if (d.url.indexOf(B + '?') === 0 || d.url.indexOf(location.origin + '/') === 0) f.src = d.url; // only DLV pages
+    } else if (d.dlv === 'dt' && d.dt) {
+      try { history.replaceState(null, '', '?action=demoPreview&domain=' + encodeURIComponent(d.domain || '') + '&dt=' + encodeURIComponent(d.dt)); } catch (x) {} // reload continues the tour
+    }
+  });
+})();
+</script>
+</body>
+</html>
